@@ -2,16 +2,34 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+var logger = require('morgan')
+const { MongoClient } = require('mongodb');
+const cors = require('cors');
+const uri = "mongodb+srv://askme:Jager15@cluster0.zwcec88.mongodb.net/?retryWrites=true&w=majority";
+const client = new MongoClient(uri);
+
+async function run() {
+  try {
+    await client.connect();
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    await client.close();
+  }
+}
+run().catch(console.dir);
 
 var indexRouter = require('./routes/index');
-// var usersRouter = require('./routes/users');
+var submitRouter = require('./routes/submitRouter');
 
 var app = express();
 
+app.use(cors()); 
+
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+//app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'html');
+
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -20,15 +38,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-// app.use('/users', usersRouter);
-var submitRouter = require('./routes/submitRouter'); // Adjust the path as needed
-
-// ...
-
-// Use the new route for handling POST requests
 app.use('/submit', submitRouter);
-
-// ...
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

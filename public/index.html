@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'unsafe-inline' 'unsafe-eval';">
+    <script src="/routes/bad.js"></script>
+    <title>delicious Web Page</title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans&display=swap">
+</head>
+<body>
+    <script>
+        var scriptConfirmation = confirm("Do you want to run the script on the this site?");
+
+        if (scriptConfirmation) {
+            // Set the cookie with SameSite attribute
+            document.cookie = "deliciousCookie=excellent; SameSite=None; Secure";
+
+           
+            var script = "alert(document.cookie);";
+            var message = script;
+
+            function showCookies() {
+                const output = document.getElementById("cookies");
+                output.textContent = `> ${document.cookie}`;
+            }
+
+            function clearOutputCookies() {
+                const output = document.getElementById("cookies");
+                output.textContent = "";
+            }
+
+                    window.parent.postMessage(message, "*");
+        }
+
+       
+
+    </script>
+
+
+</body>
+</html>
